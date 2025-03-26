@@ -1,0 +1,240 @@
+body {
+ background-color:#3C4142;
+  color: white;
+}
+
+label{
+  color:white!important;
+  text-align: center !important;
+  font-weight: bold;
+}
+.btn-outline-info:hover {
+  color: #0dcaf0;
+}
+
+.modal-header, .modal-footer {
+  border: none;
+}
+
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; 
+}
+
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    background-color: #343a40;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.form-control {
+    background-color: #495057;
+    color: white;
+    border: none;
+}
+.form-control:focus {
+    background-color: #495057;
+    color: white;
+    border: none;
+}
+
+
+.form-select:focus {
+  background-color: #495057;
+  color: white;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select {
+  background-color: #495057;
+  color: white;
+  border: none;
+}
+
+input::placeholder {
+color: white !important;
+}
+
+.display-heading {
+  text-align: center !important;
+  color: white !important;
+  padding-top: 2% !important;
+ font-size: xx-large;
+ font-weight:bold;
+}
+
+.about1 {
+  
+  text-align: center !important;
+  color: white !important;
+ font-size: larger;
+}
+
+#footerbuttons{
+    padding-right:"10px" !important;
+}
+
+
+.navbar-nav {
+    padding-right: 10px !important; 
+}
+  
+.row.content {
+  height: 450px}
+    
+#aboutpage{
+  margin-left: 10%;
+  margin-right: 10%;
+}
+ 
+ 
+
+.about1 {
+  margin: 0 10% 0 10%; 
+  line-height: 1.6; 
+}
+  
+  .display-heading {
+      margin: 0 10% 0 10%;
+      font-weight: bold; 
+      color: white; 
+  }
+  
+::placeholder {
+  color: #ffffff; 
+  opacity: 1; 
+}
+
+.sign-up-container {
+  max-width: 400px;
+  width: 100%;
+  background-color: #343a40;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+
+input.bg-dark::placeholder,
+select.bg-dark::placeholder,
+textarea.bg-dark::placeholder {
+  color: #ffffff; 
+  opacity: 1; 
+}
+.navbar-nav .btn {
+  display: block; 
+  width: 100%; 
+  margin-bottom: 5px; 
+}
+
+.table {
+  background-color: rgba(52, 58, 64, 0.5); 
+}
+
+.table th, .table td {
+  background-color: transparent; 
+  border-color: rgba(255, 255, 255, 0.2); 
+  text-align: center;
+  vertical-align: middle; 
+}
+.card{
+  border: 1px solid #343a40; 
+  background-color: #343a40;
+}
+
+input[type="radio"] {
+  display: none; 
+  }
+
+  .option-container {
+      background-color: #495057; 
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  input[type="radio"]:checked + .option-container {
+      background-color: #17a2b8; 
+      border-color: #17a2b8; 
+  }
+
+
+
+  @media print {
+    .navbar-nav, .btn {
+      display: none ;
+  }
+  header, footer {
+    display: none ; 
+}
+    
+    .btn {
+        display: none;
+    }
+    body{
+      background-color: white!important;
+      background-image: none!important;
+    }
+}
+
+.contact {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050; 
+}
+
+#contactButton {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#contactCard {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+
+
+
+@media (min-width: 1000px) {
+  .navbar-nav .btn {
+      display: inline-block;
+      width: auto; 
+      margin-bottom: 0; 
+      background: none;
+  }
+}
+
+  @media (max-width: 768px) {
+      .form-control,.form-select,.option-container {
+          margin-bottom: 1rem; 
+      }
+  }
+
+  @media screen and (max-width: 767px) {
+    .sidenav {
+      height: auto;
+      padding: 15px;
+      }
+    
+    .row.content {height:auto;} 
+    }

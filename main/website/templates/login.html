@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Horizon Travels</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='apple-touch-icon-precomposed.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+    background: url("{{ url_for('static', filename='plane_rotate.png') }}") no-repeat center center fixed;
+    background-size: cover; 
+    color: #f8f9fa; 
+}
+    </style>
+
+</head>
+
+<body class="d-flex flex-column vh-100 bg-dark">
+    <nav class="navbar navbar-expand-lg  navbar-dark px-5">
+        <a href="/" class="navbar-brand">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Horizon Travels Logo" height="50">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <button class="btn btn-outline-secondary me-3" onclick="window.location.href='/'">Home</button>
+                <button class="btn btn-outline-secondary me-3" onclick="window.location.href='/about'">About</button>
+                {% if user_name %}
+                    <a href="{{ url_for('account') }}" class="btn btn-outline-info me-3">Hello, {{ user_name.split(' ')[0] }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-info me-3">Log in</a>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="d-flex justify-content-center align-items-center flex-grow-1">
+        <div class="login-container">
+            <h2 class="text-center mb-4">Log In</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">Email address:</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn btn-info w-100">Log In</button>
+            </form>
+            <p class="mt-3 text-center">Don't have an account? <a href="{{ url_for('register') }}" class="text-info">Sign Up</a></p>
+            <p class="text-center mt-3">
+                <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Error Modal for wrong email and password -->
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Oops!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    Invalid email or password. Please try again.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="forgotPasswordForm" method="POST" action="{{ url_for('forgot_password') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recoveryPin" class="form-label">Recovery PIN</label>
+                        <input type="text" class="form-control" id="recoveryPin" name="recovery_pin" maxlength="6" minlength="6" placeholder="your recovery PIN" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="new_password" placeholder="Enter a new password" required>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">Reset Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Reset Success Modal -->
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Password Reset Successful</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your password has been reset successfully. Please log in with your new password.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Reset Error Modal -->
+
+<div class="modal fade" id="resetErrorModal" tabindex="-1" aria-labelledby="resetErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetErrorModalLabel">Reset Password Error</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Invalid email or recovery PIN. Please try again.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <footer class="text-center text-white  py-3 mt-auto">
+        <p>© 2024 Horizon Travels. All Rights Reserved.</p>
+    </footer>
+
+</body>
+
+</html>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const passwordResetSuccess = JSON.parse("{{ password_reset_success | default(false) | tojson }}");
+    const passwordResetError = JSON.parse("{{ password_reset_error | default(false) | tojson }}");
+    const loginError = JSON.parse("{{ login_error | default(false) | tojson }}");
+
+    if (passwordResetSuccess) {
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    }
+
+    if (passwordResetError) {
+        const resetErrorModal = new bootstrap.Modal(document.getElementById('resetErrorModal'));
+        resetErrorModal.show();
+    }
+
+    if (loginError) {
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    }
+});
+</script>

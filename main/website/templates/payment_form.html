@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Horizon Travels</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='apple-touch-icon-precomposed.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body class="bg-dark text-white">
+
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark px-5">
+        <a href="/" class="navbar-brand">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Horizon Travels Logo" height="50">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <button class="btn btn-outline-secondary me-3" onclick="window.location.href='/'">Home</button>
+                <button class="btn btn-outline-secondary me-3" onclick="window.location.href='/about'">About</button>
+                {% if user_name %}
+                    <a href="{{ url_for('account') }}" class="btn btn-outline-info me-3">Hello, {{ user_name.split(' ')[0] }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-info me-3">Log in</a>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 class="text-center">Payment Details</h1>
+        <br>
+
+        <form method="POST" action="{{ url_for('process_payment') }}" class="p-4 rounded text-white shadow-lg" style="border: 1px solid #343a40; background-color: #343a40;">
+            <input type="hidden" name="flight_number" value="{{ flight_number }}">
+            <input type="hidden" name="travel_date" value="{{ travel_date }}">
+            <input type="hidden" name="travel_class" value="{{ travel_class }}">
+            <input type="hidden" name="passengers" value="{{ passengers }}">
+            <input type="hidden" name="total_price" value="{{ total_price }}">
+            
+            <div class="mb-3">
+                <label for="amount" class="form-label">Total Amount</label>
+                <input type="text" class="form-control" id="amount" name="amount" value="£{{ total_price | round(2) }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="cardName" class="form-label">Cardholder's Name</label>
+                <input type="text" class="form-control" id="cardName" name="cardName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="cardNumber" class="form-label">Card Number</label>
+                <input type="text" 
+                class="form-control" 
+                placeholder="1234-1234-1234-1234" 
+                id="cardNumber" 
+                name="cardNumber" 
+                maxlength="19" 
+                pattern="\d{4}-\d{4}-\d{4}-\d{4}"
+                required 
+                oninput="formatCardNumber(event)">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                    <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5" oninput="formatExpiryDate(event)" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="cvv" class="form-label">CVV</label>
+                    <input type="password" class="form-control" id="cvv" name="cvv" maxlength="3" oninput="restrictNumericInput(event)" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-info">Complete Payment</button>
+            </div>
+        </form>
+        <br>
+        <br>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+    </div>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    function formatExpiryDate(event) {
+        const input = event.target;
+        const value = input.value.replace(/[^0-9]/g, ''); 
+        if (value.length >= 2) {
+            input.value = value.slice(0, 2) + '/' + value.slice(2, 4);
+        } else {
+            input.value = value; 
+        }
+    }
+    function restrictNumericInput(event) {
+        const input = event.target;
+        const value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+        input.value = value; // Update the input field with numeric-only value
+    }
+    function formatCardNumber(event) {
+        const input = event.target;
+        const value = input.value.replace(/\D/g, ''); // Removes any letters and non numeric characters
+        const formattedValue = value.match(/.{1,4}/g)?.join('-') || value; // Group digits in sets of 4 and join with a dash
+        input.value = formattedValue; // Set the formatted value
+    }
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const cardNumberInput = document.getElementById('cardNumber');
+        cardNumberInput.value = cardNumberInput.value.replace(/-/g, ''); // Remove all dashes
+    });
+</script>

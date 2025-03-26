@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Booking</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='apple-touch-icon-precomposed.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="bg-dark text-white">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark px-5">
+        <a href="/admin" class="navbar-brand">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Horizon Travels Logo" height="50">
+          </a>  
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <button class="btn btn-outline-info me-3" onclick="window.location.href='/admin'">Back to Admin Panel</button>
+                <button class="btn btn-outline-danger me-3" onclick="window.location.href='/admin/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Check Booking</h1>
+        <p class="text-center">Search for booking details by reference number or user ID.</p>
+        <form method="POST" class="d-flex justify-content-center mb-4">
+            <input type="hidden" name="action" value="search_booking">
+            <div class="form-group me-2 card">
+                <select name="search_type" class="form-select text-white" required>
+                    <option value="" disabled selected>Search By</option>
+                    <option value="ref_num">Booking Reference</option>
+                    <option value="a_num">User ID</option>
+                </select>
+            </div>
+            <div class="form-group me-2 card">
+                <input type="text" name="search_value" class="form-control  text-white" placeholder="Enter value" required>
+            </div>
+            <button type="submit" class="btn btn-info">Search</button>
+        </form>
+        {% if booking %}
+            <h2 class="text-center">Search Results</h2>
+            <table class="table table-dark table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Flt Number</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>DPT Date</th>
+                        <th>DPT Time</th>
+                        <th>Passengers</th>
+                        <th>Class</th>
+                        <th>Price</th>
+                        <th>Change Date</th>
+                        <th>Cancel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in booking %}
+                    <tr>
+                        <td>{{ b.booking_ref }}</td>
+                        <td>{{ b.flight_number }}</td>
+                        <td>{{ b.departure_airport }}</td>
+                        <td>{{ b.arrival_airport }}</td>
+                        <td>{{ b.departure_date }}</td>
+                        <td>{{ b.departure_time }}</td>
+                        <td>{{ b.passengers }}</td>
+                        <td>{{ 'Business' if (b.business_class or 0) > 0 else 'Economy' }}</td>
+                        <td>£{{ (b.total_price or 0) | round(2) }}</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#changeDateModal" 
+                                    onclick="setBookingRef('{{ b.booking_ref }}')">Change Date</button>
+                        </td>
+                        <td>
+                            <form method="POST" class="d-inline">
+                                <input type="hidden" name="action" value="cancel_booking">
+                                <input type="hidden" name="booking_ref" value="{{ b.booking_ref }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif search_criteria %}
+            <p class="text-center text-warning">No results found for "{{ search_criteria }}".</p>
+        {% endif %}
+    </div>
+    <div class="modal fade" id="changeDateModal" tabindex="-1" aria-labelledby="changeDateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeDateModalLabel">Change Departure Date</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="changeDateForm" method="POST" action="{{ url_for('update_booking_date') }}">
+                    <div class="modal-body">
+                        <input type="hidden" name="ref_num" id="modalBookingRef">
+                        <div class="form-group">
+                            <label for="newDate" class="form-label">New Departure Date</label>
+                            <input 
+                            class="form-control"
+                                type="date" 
+                                id="newDate" 
+                                name="new_date" 
+                                class="form-control bg-dark text-white" 
+                                required
+                                min="{{ current_date }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info">Update Date</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center text-white py-3">
+        <p>© 2024 Horizon Travels. All Rights Reserved.</p>
+      </footer>
+
+    <script>
+        function setBookingRef(bookingRef) {
+            document.getElementById('modalBookingRef').value = bookingRef;
+        }
+        function setCancelRef(bookingRef) {
+    console.log('Setting ref_num for Cancel Booking:', bookingRef); // Debugging
+    document.getElementById('cancelBookingRef').value = bookingRef;
+}
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Payments</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='apple-touch-icon-precomposed.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body class="bg-dark text-white">
+
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark px-5">
+        <a href="/admin" class="navbar-brand">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Horizon Travels Logo" height="50">
+          </a>  
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <button class="btn btn-outline-info me-3" onclick="window.location.href='/admin'">Back to Admin Panel</button>
+                <button class="btn btn-outline-danger me-3" onclick="window.location.href='/admin/logout'">Logout</button>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Manage Payments</h1>
+        <p class="text-center">Search for payment details by Booking Number or User ID.</p>
+        <form method="POST" class="d-flex justify-content-center mb-4">
+            <input type="hidden" name="action" value="search_payment">
+            <div class="form-group me-2 card">
+                <select name="search_type" class="form-select text-white" required>
+                    <option value="" disabled selected>Search By</option>
+                    <option value="ref_num">Booking Reference</option>
+                    <option value="a_num">User ID</option>
+                </select>
+            </div>
+
+            <div class="form-group me-2 card">
+                <input type="text" name="search_value" class="form-control  text-white" placeholder="Enter value" required>
+            </div>
+            <button type="submit" class="btn btn-info">Search</button>
+        </form>
+
+        {% if payments %}
+            <h2 class="text-center">Search Results</h2>
+            <table class="table table-dark table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>Booking Reference</th>
+                        <th>Account Number</th>
+                        <th>Cardholder Name</th>
+                        <th>Amount (£)</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.payment_id }}</td>
+                        <td>{{ payment.ref_num }}</td>
+                        <td>{{ payment.account_number }}</td>
+                        <td>{{ payment.card_name }}</td>
+                        <td>£{{ payment.amount | round(2) }}</td>
+                        <td>{{ payment.payment_date }}</td>
+                        <td>
+                            {% if payment.refunded %}
+                            <span class="text-success">Refunded</span>
+                            {% else %}
+                            <span class="text-warning">Not Refunded</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not payment.refunded %}
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="action" value="refund_payment">
+                                <input type="hidden" name="payment_id" value="{{ payment.payment_id }}">
+                                <button type="submit" class="btn btn-warning btn-sm">Refund</button>
+                            </form>
+                            {% else %}
+                            <span style="color: white;">No Actions</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        {% elif search_criteria %}
+            <p class="text-center text-warning">No results found for "{{ search_criteria }}".</p>
+        {% endif %}
+    </div>
+
+    {% if refund_success %}
+    <div class="modal fade show" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-light text-black">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="refundModalLabel">Refund Complete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.href='/admin/payments';"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>The refund has been successfully processed.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="window.location.href='/admin/payments';">Done</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <footer class="text-center text-white bg-dark py-3">
+    </footer>
+
+</body>
+
+</html>

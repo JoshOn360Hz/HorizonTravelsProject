@@ -1,0 +1,85 @@
+<!-- Josh Mansfield -- Web development and databases. Student number 22013261 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating - Horizon Travels</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body class="bg-dark text-white">
+
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark px-5">
+    <a href="/" class="navbar-brand">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Horizon Travels Logo" height="50">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <button type="button" class="btn btn-outline-secondary me-3" onclick="window.location.href='/'">Home</button>
+            <button type="button" class="btn btn-outline-info me-3" onclick="window.location.href='/about'">About</button>
+            {% if session.get('user_name') %}
+                <a href="{{ url_for('account') }}" class="btn btn-outline-secondary me-3">Hello, {{ session['user_name'].split(' ')[0] }}</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline-secondary me-3">Log in</a>
+            {% endif %}
+        </ul>
+    </div>
+  </nav>
+
+  <section class="container text-center my-5">
+    <br>
+      <h2 class="display-heading">Seat Map</h2>
+      <p class="lead">Below is the seating arrangement for our Airbus A320 aircraft.</p>
+      <div class="plane-image">
+          <img src="{{ url_for('static', filename='seat_map.png') }}" alt="Seating Map" class="img-fluid my-4" style="max-width: 90%;">
+      </div>
+      <p class="lead">*Configuration may change based on number of passangers in each class.</p>
+      <p class="lead">Larger gaps in the seat map do not correspond to more legroom.</p>
+  </section>
+  <div class="contact">
+    <button id="contactButton" class="btn btn-info rounded-circle">
+        <i class="bi bi-question-circle"></i> 
+    </button>
+    <div id="contactCard" class="card shadow-lg" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 300px;">
+        <div class="card-header  text-info d-flex justify-content-between align-items-center">
+            <span>Contact Us</span>
+            <button type="button" class="btn-close btn-close-white" id="closeContactCard" aria-label="Close"></button>
+        </div>
+        <div class="card-body bg-dark text-black">
+            <button class="btn btn-info w-100 mb-2" onclick="window.location.href='tel:020 7946 0000'">Call Us</button> <!-- phone number doesnt exist its an ofcom reserved number for media -->
+            <button class="btn btn-info w-100 mb-2" onclick="window.location.href='mailto:info@horizontravels.com'">Email Us</button>
+            <button class="btn btn-info w-100 mb-2" onclick="window.open('https://maps.app.goo.gl/pabouXPEYX86P4m59', '_blank')">Visit Us</button>
+        </div>
+    </div>
+</div>
+
+  <footer class="text-center text-white bg-dark py-3">
+      <p>© 2024 Horizon Travels. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
+<script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const contactButton = document.getElementById('contactButton');
+        const contactCard = document.getElementById('contactCard');
+        const closeContactCard = document.getElementById('closeContactCard');
+
+        contactButton.addEventListener('click', function () {
+            contactCard.style.display = contactCard.style.display === 'none' ? 'block' : 'none';
+        });
+
+        closeContactCard.addEventListener('click', function () {
+            contactCard.style.display = 'none';
+        });
+    });
+</script>
